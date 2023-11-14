@@ -7,7 +7,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // RFID-Empfänger benennen
 bool registerMode = false;
 long lastId = 0;
 long registeredIds[20];
-int registeredIdCount = 0;
+size_t registeredIdCount = 0;
 
 bool valueinarray(long val, long *arr, size_t n) {
     for(size_t i = 0; i < n; i++) {

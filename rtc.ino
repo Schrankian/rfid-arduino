@@ -4,7 +4,7 @@ RtcDS1302<ThreeWire> Rtc(myWire);
 
 #define countof(a) (sizeof(a) / sizeof(a[0]))
 
-void printDateTime(const RtcDateTime& dt)
+String dateTimeToString(const RtcDateTime& dt)
 {
     char datestring[20];
 
@@ -17,7 +17,24 @@ void printDateTime(const RtcDateTime& dt)
             dt.Hour(),
             dt.Minute(),
             dt.Second() );
-    Serial.print(datestring);
+            
+    return String(datestring);
+}
+
+String currentDateTimeToString(){
+    RtcDateTime now = Rtc.GetDateTime();
+
+    if (!now.IsValid())
+    {
+        // Common Causes:
+        //    1) the battery on the device is low or even missing and the power line was disconnected
+       return "DateTime is not valid";
+    }
+    return dateTimeToString(now);
+}
+
+bool isWeekend(){
+  return true;
 }
 
 //--------------------Begin--------------------------
@@ -27,7 +44,7 @@ void rtcSetup(){
     Rtc.Begin();
 
     RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
-    printDateTime(compiled);
+    Serial.print(dateTimeToString(compiled));
     Serial.println();
 
     if (!Rtc.IsDateTimeValid()) 
@@ -66,21 +83,4 @@ void rtcSetup(){
     {
         Serial.println("RTC is the same as compile time! (not expected but all is fine)");
     }
-}
-
-void rtcLoop(){
-    RtcDateTime now = Rtc.GetDateTime();
-
-    printDateTime(now);
-    Serial.println();
-
-    if (!now.IsValid())
-    {
-        // Common Causes:
-        //    1) the battery on the device is low or even missing and the power line was disconnected
-        Serial.println("RTC lost confidence in the DateTime!");
-    }
-
-    delay(1000); // ten seconds
-
 }

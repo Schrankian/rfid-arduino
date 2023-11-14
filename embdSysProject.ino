@@ -12,6 +12,13 @@
 #include <Wire.h> // Wire Bibliothek einbinden
 #include <LiquidCrystal_I2C.h> // Vorher hinzugefügte LiquidCrystal_I2C Bibliothek einbinden
 
+enum AccessState{
+  IDLE,
+  GRANTED,
+  BLOCKEDNORM,
+  BLOCKEDTIME,
+  REGISTER,
+};
 
 void setup() {
   Serial.begin(9600);
@@ -23,6 +30,5 @@ void setup() {
 
 void loop() {
   rfidLoop();
-  rtcLoop();
   displayLoop();
 }
