@@ -13,7 +13,7 @@ size_t registeredIdCount = 0;
 
 // Delay
 unsigned long lastScanTime = 0;
-unsigned long scanCooldown = 2000;
+unsigned long scanCooldown = COOLDOWN;
 
 bool valueInArray(long val, long *arr, size_t n) {
   for (size_t i = 0; i < n; i++) {
@@ -52,9 +52,11 @@ void rfidSetup() {
 void rfidLoop() {
   // Soft delay
   if (millis() - lastScanTime < scanCooldown) {
+    digitalWrite(7, LOW);
     return;
   }
-
+  digitalWrite(6, LOW);
+  digitalWrite(7, HIGH);
   // Skip execution if no card is present
   if (!mfrc522.PICC_IsNewCardPresent()) {
     return;
@@ -74,12 +76,13 @@ void rfidLoop() {
     Serial.println("Access allowed");
     accessTemplate[1] = currentDateTimeToString();
     changeDisplayValue(TEMP, accessTemplate);
-  } else if (code != 457290 && !registerMode) {
+    digitalWrite(6, HIGH);
+  } else if (code != MASTER_ID && !registerMode) {
     Serial.println("Access denied");
     changeDisplayValue(TEMP, blockTemplate);
   }
 
-  if (registerMode && code != 457290) {
+  if (registerMode && code != MASTER_ID) {
     if (valueInArray(code, registeredIds, registeredIdCount)) {
       removeValue(code, registeredIds, registeredIdCount);
       registeredIdCount--;

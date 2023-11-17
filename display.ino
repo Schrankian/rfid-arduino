@@ -5,7 +5,7 @@ String* lastState;
 
 // Delay
 unsigned long lastDisplayTime = 0;
-unsigned long displayCooldown = 2000;
+unsigned long displayCooldown = COOLDOWN;
 
 void changeDisplayValue(DisplayType type, String value[2]) {
   lcd.clear();

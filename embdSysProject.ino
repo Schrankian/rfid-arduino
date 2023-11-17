@@ -12,6 +12,8 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
+#define COOLDOWN 1000
+
 enum DisplayType {
   PERM,
   TEMP
@@ -26,7 +28,8 @@ String blockTemplate[2] = { "Access Blocked", "Not registered" };
 
 void setup() {
   Serial.begin(9600);
-
+pinMode(6, OUTPUT);
+pinMode(7, OUTPUT);
   rfidSetup();
   rtcSetup();
   displaySetup();
