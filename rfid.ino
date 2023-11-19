@@ -12,8 +12,7 @@ long registeredIds[20];
 size_t registeredIdCount = 0;
 
 // Delay
-unsigned long lastScanTime = 0;
-unsigned long scanCooldown = COOLDOWN;
+bool onCoolDown = false;
 
 bool valueInArray(long val, long *arr, size_t n) {
   for (size_t i = 0; i < n; i++) {
@@ -51,7 +50,7 @@ void rfidSetup() {
 
 void rfidLoop() {
   // Soft delay
-  if (millis() - lastScanTime < scanCooldown) {
+  if (onCoolDown) {
     digitalWrite(7, LOW);
     return;
   }
@@ -119,5 +118,9 @@ void rfidLoop() {
   Serial.println();
 
   // Start delay
-  lastScanTime = millis();
+  onCoolDown = true;
+
+  // Controlls the amount of seconds, all new cards are blocked
+  // Also controlls the timespan, the temporary display values are shown
+  startTimer(1);
 }

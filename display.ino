@@ -3,9 +3,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  //Hier wird festgelegt um was für einen Di
 
 String* lastState;
 
-// Delay
-unsigned long lastDisplayTime = 0;
-unsigned long displayCooldown = COOLDOWN;
+bool cooldownFinished = false;
 
 void changeDisplayValue(DisplayType type, String value[2]) {
   lcd.clear();
@@ -14,10 +12,7 @@ void changeDisplayValue(DisplayType type, String value[2]) {
   lcd.setCursor(0, 1);
   lcd.print(value[1]);
 
-  if (type == TEMP) {
-    // Start delay
-    lastDisplayTime = millis();
-  } else {
+  if (type == PERM) {
     lastState = value;
   }
 }
@@ -32,11 +27,9 @@ void displaySetup() {
 
 void displayLoop() {
   // Soft delay
-  if (millis() - lastDisplayTime < displayCooldown || lastDisplayTime == 0) {
+  if (!cooldownFinished) {
     return;
   }
-
-  lastDisplayTime = 0;
-
   changeDisplayValue(PERM, lastState);
+  cooldownFinished = false;
 }
