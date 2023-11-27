@@ -32,7 +32,14 @@ String currentDateTimeToString() {
 }
 
 bool isWeekend() {
-  return true;
+  RtcDateTime now = Rtc.GetDateTime();
+
+  //sunday->0 | Monday->1 | Tuesday->2 ...
+  if(now.DayOfWeek() == 0 || now.DayOfWeek() == 6){
+    return true;
+  }else{
+    return false;
+  }
 }
 
 //--------------------Begin--------------------------

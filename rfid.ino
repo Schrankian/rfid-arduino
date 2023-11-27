@@ -72,12 +72,20 @@ void rfidLoop() {
   }
 
   if (!registerMode && valueInArray(code, registeredIds, registeredIdCount)) {
-    Serial.println("Access allowed");
-    accessTemplate[1] = currentDateTimeToString();
-    changeDisplayValue(TEMP, accessTemplate);
-    digitalWrite(6, HIGH);
+    if (isWeekend()) {
+      Serial.println("It is weekend");
+      blockTemplate[1] = "It is weekend";
+      changeDisplayValue(TEMP, blockTemplate);
+    } else {
+      Serial.println("Access allowed");
+      accessTemplate[1] = currentDateTimeToString();
+      changeDisplayValue(TEMP, accessTemplate);
+      digitalWrite(6, HIGH);
+    }
+
   } else if (code != MASTER_ID && !registerMode) {
     Serial.println("Access denied");
+    blockTemplate[1] = "Not registered";
     changeDisplayValue(TEMP, blockTemplate);
   }
 
