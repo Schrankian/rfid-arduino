@@ -2,7 +2,7 @@
 // Starts the timer register
 // Use like this:
 /*
-startTimer(3);
+startTimer(3); // -> time in whole seconds (int)
 */
 
 bool timerIsActive = false;
@@ -45,10 +45,13 @@ void stopTimer() {
   sei();
 }
 
+// Catch interrupt
 ISR(TIMER1_COMPA_vect) {
+  // Enable card scans
   onCoolDown = false;
+  // Change Display Value back
   cooldownFinished = true;
-  Serial.println("Interrupt called");
 
-  stopTimer();  // If not stoped, it loops
+  // Stop the timer again (one shot). If not, it starts again
+  stopTimer();
 }

@@ -21,10 +21,10 @@ enum DisplayType {
 String idleTemplate[2] = { "Waiting for", "Connections..." };
 String registerModeTemplate[2] = { "Register Mode", "Scan new Id" };
 String accessTemplate[2] = { "Access Granted", "-TIME-" };
-String blockTemplate[2] = { "Access Blocked", "Not registered" };
+String blockTemplate[2] = { "Access Blocked", "-REASON-" };
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
   rfidSetup();

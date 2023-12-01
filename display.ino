@@ -1,5 +1,5 @@
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);  //Hier wird festgelegt um was für einen Display es sich handelt. In diesem Fall eines mit 16 Zeichen in 2 Zeilen und der HEX-Adresse 0x27. Für ein vierzeiliges I2C-LCD verwendet man den Code "LiquidCrystal_I2C lcd(0x27, 20, 4)"
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Set display type: 16 characters on 2 rows and address 0x27
 
 String* lastState;
 
@@ -26,7 +26,7 @@ void displaySetup() {
 }
 
 void displayLoop() {
-  // Soft delay
+  // Variable set by Interrupt
   if (!cooldownFinished) {
     return;
   }
