@@ -18,15 +18,18 @@ enum DisplayType {
 };
 
 // Templates
-String idleTemplate[2] = { "Waiting for", "Connections..." };
-String registerModeTemplate[2] = { "Register Mode", "Scan new Id" };
-String accessTemplate[2] = { "Access Granted", "-TIME-" };
-String blockTemplate[2] = { "Access Blocked", "-REASON-" };
+String idleTemplate[2] = { "Warten auf", "RFID-Chip..." };
+String registerModeTemplate[2] = { "Registriermodus", "RFID-Ger\xE1t +/-" };
+String accessTemplate[2] = { "Zugang gew\xE1hrt", "-TIME-" };
+String blockTemplate[2] = { "Zugang gesperrt", "-REASON-" };
+String notRegisteredString = "Nicht angemeldet";
+String isWeekendString = "Es ist Sa/So";
+String addPrefixString = "+ ";
+String remPrefixString = "- ";
 
 void setup() {
-  //Serial.begin(9600);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
+  pinMode(6, OUTPUT); // Relais
+  pinMode(7, OUTPUT); // LED
   rfidSetup();
   rtcSetup();
   displaySetup();

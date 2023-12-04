@@ -11,9 +11,6 @@ bool registerMode = false;
 long registeredIds[20];
 size_t registeredIdCount = 0;
 
-// Delay. Set by Interrupt
-bool onCoolDown = false;
-
 bool valueInArray(long val, long *arr, size_t n) {
   for (size_t i = 0; i < n; i++) {
     if (arr[i] == val)
@@ -34,7 +31,6 @@ void removeValue(long val, long *arr, size_t n) {
   }
 }
 
-//--------------------Begin--------------------------
 void rfidSetup() {
   // Initialize spi and rfid-receiver
   SPI.begin();
@@ -42,25 +38,13 @@ void rfidSetup() {
 }
 
 void rfidLoop() {
-  // Wait till Cooldown is over
-  if (onCoolDown) {
-    // Disable LED
-    digitalWrite(7, LOW);
-    return;
-  }
-
   // Disable Relais (Default)
   digitalWrite(6, LOW);
   // Enable LED (Default)
   digitalWrite(7, HIGH);
 
-  // Skip execution if no card is present
-  if (!mfrc522.PICC_IsNewCardPresent()) {
-    return;
-  }
-
-  // Skip execution if no rfid-sender is present
-  if (!mfrc522.PICC_ReadCardSerial()) {
+  // Skip execution if no card or no rfid-sender is present
+  if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
     return;
   }
 
@@ -75,7 +59,7 @@ void rfidLoop() {
     // Id is registered
     if (isWeekend()) {
       // Block on weekend -> Do nothing, just change display
-      blockTemplate[1] = "It is weekend";
+      blockTemplate[1] = isWeekendString;
       changeDisplayValue(TEMP, blockTemplate);
     } else {
       // Enable Relais, change display
@@ -83,10 +67,9 @@ void rfidLoop() {
       changeDisplayValue(TEMP, accessTemplate);
       digitalWrite(6, HIGH);
     }
-
   } else if (code != MASTER_ID && !registerMode) {
     // Id not registered -> Do nothing, just change display
-    blockTemplate[1] = "Not registered";
+    blockTemplate[1] = notRegisteredString;
     changeDisplayValue(TEMP, blockTemplate);
   }
 
@@ -97,14 +80,14 @@ void rfidLoop() {
       removeValue(code, registeredIds, registeredIdCount);
       registeredIdCount--;
       // Print the removed id
-      String deletedIdString[2] = { registerModeTemplate[0], "Del ID: " + String(code) };
+      String deletedIdString[2] = { registerModeTemplate[0], remPrefixString + String(code) };
       changeDisplayValue(TEMP, deletedIdString);
     } else {
       // New Card -> Add
       registeredIds[registeredIdCount] = code;
       registeredIdCount++;
       // Print the new registered id
-      String registeredIdString[2] = { registerModeTemplate[0], "New ID: " + String(code) };
+      String registeredIdString[2] = { registerModeTemplate[0], addPrefixString + String(code) };
       changeDisplayValue(TEMP, registeredIdString);
     }
   }
@@ -120,9 +103,7 @@ void rfidLoop() {
     }
   }
 
-  // Start delay -> Is later set to false by Interupt
-  onCoolDown = true;
-  // Controlls the amount of seconds, all new cards are blocked
-  // Also controlls the timespan, the temporary display values are shown
-  startTimer(1);
+  // Disable LED and set delay
+  digitalWrite(7, LOW);
+  delay(1000);
 }

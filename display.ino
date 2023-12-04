@@ -1,4 +1,3 @@
-
 LiquidCrystal_I2C lcd(0x27, 16, 2);  // Set display type: 16 characters on 2 rows and address 0x27
 
 String* lastState;
@@ -14,10 +13,12 @@ void changeDisplayValue(DisplayType type, String value[2]) {
 
   if (type == PERM) {
     lastState = value;
+  }else{
+    // Start the reset time, on which the value gets reset to "lastState"
+    startTimer(2);
   }
 }
 
-//--------------------Begin--------------------------
 void displaySetup() {
   // Initialize Screen
   lcd.init();
